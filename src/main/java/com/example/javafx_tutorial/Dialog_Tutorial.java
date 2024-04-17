@@ -1,12 +1,15 @@
 package com.example.javafx_tutorial;
 
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import kotlin.Pair;
+import javafx.util.Pair;
+
+import java.util.Optional;
 
 public class Dialog_Tutorial extends Application {
 
@@ -33,6 +36,30 @@ public class Dialog_Tutorial extends Application {
         grid.add(username, 1,0);
         grid.add(new Label("Password"), 0,1);
         grid.add(password, 1,1);
+
+        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        loginButton.setDisable(true);
+
+        username.textProperty().addListener((observableValue, oldvalue, newvalue) -> {
+            loginButton.setDisable(newvalue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if(dialogButton == loginButtonType){
+                return new Pair<>(username.getText(), password.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+        result.ifPresent(Usernamepassword -> {
+            System.out.println("Username: " + Usernamepassword.getKey() + ", Password: " + Usernamepassword.getValue());
+        });
+
+        Button cancelButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+        cancelButton.setOnAction(event -> dialog.close());
     }
     public static void main(String[] args) {
         launch();
