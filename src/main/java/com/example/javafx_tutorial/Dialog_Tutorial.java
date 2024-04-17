@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -12,12 +13,12 @@ import javafx.util.Pair;
 import java.util.Optional;
 
 public class Dialog_Tutorial extends Application {
-
+    Stage primaryStage = new Stage();
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<Pair<String, String>> dialog =new Dialog<>();
         dialog.setTitle("Login Dialog");
-        dialog.setHeaderText("Sign up");
+        dialog.setHeaderText("Sign in");
 
         ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
@@ -37,29 +38,29 @@ public class Dialog_Tutorial extends Application {
         grid.add(new Label("Password"), 0,1);
         grid.add(password, 1,1);
 
+        dialog.getDialogPane().setContent(grid);
+
         Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
         loginButton.setDisable(true);
-
         username.textProperty().addListener((observableValue, oldvalue, newvalue) -> {
             loginButton.setDisable(newvalue.trim().isEmpty());
         });
 
-        dialog.getDialogPane().setContent(grid);
-
-        dialog.setResultConverter(dialogButton -> {
+        dialog.setResultConverter(dialogButton ->{
             if(dialogButton == loginButtonType){
                 return new Pair<>(username.getText(), password.getText());
             }
             return null;
         });
 
-        Optional<Pair<String, String>> result = dialog.showAndWait();
-        result.ifPresent(Usernamepassword -> {
-            System.out.println("Username: " + Usernamepassword.getKey() + ", Password: " + Usernamepassword.getValue());
+        Optional<Pair<String,String>> result = dialog.showAndWait();
+        result.ifPresent(User -> {
+            System.out.println("Username: " + User.getKey() + ", Password: " + User.getValue());
         });
 
-        Button cancelButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-        cancelButton.setOnAction(event -> dialog.close());
+        Scene scene = new Scene(dialog.getDialogPane());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
     public static void main(String[] args) {
         launch();
