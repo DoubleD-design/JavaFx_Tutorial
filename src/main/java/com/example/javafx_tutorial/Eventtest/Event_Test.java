@@ -6,9 +6,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Event_Test extends Application {
+
+    private static final Logger LOGGER = Logger.getLogger(Event_Test.class.getName());
 
     public static void main(String[] args) {
         launch(args);
@@ -17,12 +21,16 @@ public class Event_Test extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("view.fxml"));
+            URL fxmlLocation = getClass().getResource("/Users/duy/IdeaProjects/JavaFx_Tutorial/src/main/java/com/example/javafx_tutorial/Eventtest/view.fxml");
+            if (fxmlLocation == null) {
+                throw new IllegalArgumentException("Cannot find view.fxml");
+            }
+            Parent root = FXMLLoader.load(fxmlLocation);
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.show();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Failed to load the FXML view.", e);
         }
     }
 }
